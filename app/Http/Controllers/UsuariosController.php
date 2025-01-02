@@ -39,5 +39,53 @@ class UsuariosController extends Controller
             'usuarios' => $usuarios,
         ], 200);
     }
+
+    public function delete($id)
+    {
+        // Buscar el usuario por ID
+        $usuario = Usuarios::find($id);
+
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Usuario no encontrado.',
+            ], 404);
+        }
+
+        // Eliminar el usuario
+        $usuario->delete();
+
+        return response()->json([
+            'message' => 'Usuario eliminado exitosamente.',
+        ], 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validar los datos de entrada
+        $validatedData = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:usuarios,email,' . $id,
+            'password' => 'sometimes|string|min:8',
+        ]);
+
+        // Buscar el usuario por ID
+        $usuario = Usuarios::find($id);
+
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Usuario no encontrado.',
+            ], 404);
+        }
+
+        // Actualizar los datos del usuario
+        $usuario->update($validatedData);
+
+        return response()->json([
+            'message' => 'Usuario actualizado exitosamente.',
+            'user' => $usuario,
+        ], 200);
+    }
+
+
 }
 

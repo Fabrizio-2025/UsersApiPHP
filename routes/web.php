@@ -26,3 +26,7 @@ Route::post('/register',[UsuariosController::class,'register']);
 
 Route::get('/usuarios',[UsuariosController::class,'index']);
 
+Route::delete('/usuarios/{id}',[UsuariosController::class,'delete']);
+
+Route::put('/usuarios/{id}',[UsuariosController::class,'update']);
+
