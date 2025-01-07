@@ -42,4 +42,10 @@ class Usuarios extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function clientes()
+    {
+        return $this->hasMany(Cliente::class, 'usuario_id');
+    }
+
+
 }

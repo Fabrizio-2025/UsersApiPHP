@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,4 +31,16 @@ Route::get('/usuarios',[UsuariosController::class,'index']);
 Route::delete('/usuarios/{id}',[UsuariosController::class,'delete']);
 
 Route::put('/usuarios/{id}',[UsuariosController::class,'update']);
+
+Route::get('clientes',[ClienteController::class,'index']);
+
+Route::post('clientes',[ClienteController::class,'store']);
+
+Route::get('mascotas',[MascotaController::class,'index']);
+
+Route::post('mascotas',[MascotaController::class,'store']);
+
+Route::put('mascotas/{id}',[MascotaController::class,'update']);
+
+Route::delete('mascotas/{id}',[MascotaController::class,'delete']);
 
