@@ -9,32 +9,39 @@ class UsuariosController extends Controller
 {
     public function register(Request $request)
     {
-
+        // Validación de los datos de entrada
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:usuarios,email',
-            'password' => 'required|string|min:8',
+            'name' => 'required|string|min:5|max:255', // El name requiere mínimo 5 caracteres
+            'email' => 'required|email', // Validar formato de email
+            'password' => 'required|string|min:8', // Contraseña mínima de 8 caracteres
         ]);
 
+        // Verificar si el email ya está registrado
+        $existingEmail = Usuarios::where('email', $validatedData['email'])->first();
 
+        if ($existingEmail) {
+            return response()->json([
+                'message' => 'El correo ya está en uso, Choom.',
+            ], 422); // Código HTTP 422: Unprocessable Entity
+        }
+
+        // Crear el nuevo usuario
         $user = Usuarios::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
-            'password' => $validatedData['password'],
+            'password' => bcrypt($validatedData['password']), // Encriptar la contraseña
         ]);
 
-
         return response()->json([
-            'message' => 'Usuario registrado exitosamente!',
+            'message' => 'Usuario registrado exitosamente, Choom.',
             'user' => $user,
-        ], 201);
+        ], 201); // Código HTTP 201: Created
     }
+
     public function index()
     {
-        // Obtener todos los usuarios
         $usuarios = Usuarios::all();
 
-        // Respuesta en formato JSON
         return response()->json([
             'usuarios' => $usuarios,
         ], 200);
@@ -42,50 +49,42 @@ class UsuariosController extends Controller
 
     public function delete($id)
     {
-        // Buscar el usuario por ID
         $usuario = Usuarios::find($id);
 
         if (!$usuario) {
             return response()->json([
-                'message' => 'Usuario no encontrado.',
+                'message' => 'Usuario no encontrado, Choom.',
             ], 404);
         }
 
-        // Eliminar el usuario
         $usuario->delete();
 
         return response()->json([
-            'message' => 'Usuario eliminado exitosamente.',
+            'message' => 'Usuario eliminado exitosamente, Choom.',
         ], 200);
     }
 
     public function update(Request $request, $id)
     {
-        // Validar los datos de entrada
         $validatedData = $request->validate([
-            'name' => 'sometimes|string|max:255',
+            'name' => 'sometimes|string|min:5|max:255',
             'email' => 'sometimes|email|unique:usuarios,email,' . $id,
             'password' => 'sometimes|string|min:8',
         ]);
 
-        // Buscar el usuario por ID
         $usuario = Usuarios::find($id);
 
         if (!$usuario) {
             return response()->json([
-                'message' => 'Usuario no encontrado.',
+                'message' => 'Usuario no encontrado, Choom.',
             ], 404);
         }
 
-        // Actualizar los datos del usuario
         $usuario->update($validatedData);
 
         return response()->json([
-            'message' => 'Usuario actualizado exitosamente.',
+            'message' => 'Usuario actualizado exitosamente, Choom.',
             'user' => $usuario,
         ], 200);
     }
-
-
 }
-

@@ -17,13 +17,26 @@ class MascotaController extends Controller
             'cliente_id' => 'required|exists:clientes,id',
         ]);
 
+        // Verificar si ya existe una mascota con el mismo nombre para el cliente
+        $existingMascota = Mascota::where('name', $validatedData['name'])
+            ->where('cliente_id', $validatedData['cliente_id'])
+            ->first();
+
+        if ($existingMascota) {
+            return response()->json([
+                'message' => 'Ya existe una mascota con este nombre para el cliente especificado, Choom.',
+            ], 422); // Unprocessable Entity
+        }
+
+        // Crear la nueva mascota
         $mascota = Mascota::create($validatedData);
 
         return response()->json([
-            'message' => 'Mascota registrada exitosamente.',
+            'message' => 'Mascota registrada exitosamente, Choom.',
             'mascota' => $mascota,
         ], 201);
     }
+
 
     public function index()
     {
@@ -46,14 +59,14 @@ class MascotaController extends Controller
 
         if (!$mascota) {
             return response()->json([
-                'message' => 'Mascota no encontrada.',
+                'message' => 'Mascota no encontrada, Choom.',
             ], 404);
         }
 
         $mascota->update($validatedData);
 
         return response()->json([
-            'message' => 'Mascota actualizada exitosamente.',
+            'message' => 'Mascota actualizada exitosamente, Choom.',
             'mascota' => $mascota,
         ], 200);
     }
@@ -64,14 +77,14 @@ class MascotaController extends Controller
 
         if (!$mascota) {
             return response()->json([
-                'message' => 'Mascota no encontrada.',
+                'message' => 'Mascota no encontrada, Choom.',
             ], 404);
         }
 
         $mascota->delete();
 
         return response()->json([
-            'message' => 'Mascota eliminada exitosamente.',
+            'message' => 'Mascota eliminada exitosamente, Choom.',
         ], 200);
     }
 
