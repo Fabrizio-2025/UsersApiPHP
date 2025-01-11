@@ -13,7 +13,6 @@ class Cliente extends Model
 
     protected $fillable = [
         'name',
-        'email',
         'phone',
         'address',
         'usuario_id',
@@ -29,5 +28,10 @@ class Cliente extends Model
     public function mascotas()
     {
         return $this->hasMany(Mascota::class, 'cliente_id');
+    }
+
+    public function citas()
+    {
+        return $this->hasMany(Cita::class, 'cliente_id');
     }
 }

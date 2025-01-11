@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CitaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\UsuariosController;
@@ -43,4 +44,12 @@ Route::post('mascotas',[MascotaController::class,'store']);
 Route::put('mascotas/{id}',[MascotaController::class,'update']);
 
 Route::delete('mascotas/{id}',[MascotaController::class,'delete']);
+
+Route::get('/citas',[CitaController::class,'index']);
+
+Route::post('/citas',[CitaController::class,'store']);
+
+Route::put('/citas/{id}',[CitaController::class,'update']);
+
+Route::delete('/citas/{id}',[CitaController::class,'delete']);
 

@@ -5,29 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Mascota extends Model
+class Cita extends Model
 {
     use HasFactory;
 
-    protected $table = 'mascotas'; // Nombre de la tabla
+    protected $table = 'citas';
 
     protected $fillable = [
-        'name',
-        'especie',
-        'raza',
-        'edad',
         'cliente_id',
+        'mascota_id',
+        'tipo_cita',
+        'fecha_hora',
+        'descripcion',
+        'estado',
     ];
 
-    // Relación: Una mascota pertenece a un cliente
+    // Relación con Cliente
     public function cliente()
     {
         return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
-    public function citas()
+    // Relación con Mascota
+    public function mascota()
     {
-        return $this->hasMany(Cita::class, 'mascota_id');
+        return $this->belongsTo(Mascota::class, 'mascota_id');
     }
-
 }

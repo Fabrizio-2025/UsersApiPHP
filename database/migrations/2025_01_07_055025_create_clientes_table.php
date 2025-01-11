@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->nullable()->unique(); // Hacer el email opcional
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->unsignedBigInteger('usuario_id'); // Relación con usuarios

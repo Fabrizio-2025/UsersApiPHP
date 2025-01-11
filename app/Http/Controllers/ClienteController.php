@@ -12,7 +12,6 @@ class ClienteController extends Controller
         // Validación de los datos de entrada
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:clientes,email', // El email ahora es opcional
             'phone' => 'required|string|max:20', // El phone es obligatorio
             'address' => 'nullable|string|max:255',
             'usuario_id' => 'required|exists:usuarios,id',
