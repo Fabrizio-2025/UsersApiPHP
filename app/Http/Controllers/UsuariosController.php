@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UsuariosController extends Controller
 {
@@ -36,6 +37,34 @@ class UsuariosController extends Controller
             'message' => 'Usuario registrado exitosamente, Choom.',
             'user' => $user,
         ], 201); // Código HTTP 201: Created
+    }
+
+    public function login(Request $request)
+    {
+        // Validar las credenciales ingresadas
+        $validatedData = $request->validate([
+            'email' => 'required|email', // El email es obligatorio y debe tener formato válido
+            'password' => 'required|string|min:8', // La contraseña es obligatoria
+        ]);
+
+        // Buscar el usuario por email
+        $usuario = Usuarios::where('email', $validatedData['email'])->first();
+
+        // Verificar si el usuario existe y si la contraseña es válida
+        if (!$usuario || !Hash::check($validatedData['password'], $usuario->password)) {
+            return response()->json([
+                'message' => 'Credenciales inválidas, Choom.',
+            ], 401); // Código HTTP 401: Unauthorized
+        }
+
+        // Generar un token para el usuario (usando Sanctum o Passport)
+        $token = $usuario->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login exitoso, Choom.',
+            'user' => $usuario,
+            'token' => $token,
+        ], 200); // Código HTTP 200: OK
     }
 
     public function index()

@@ -27,6 +27,8 @@ Route::get('/hola', function () {
 
 Route::post('/register',[UsuariosController::class,'register']);
 
+Route::post('/login',[UsuariosController::class,'login']);
+
 Route::get('/usuarios',[UsuariosController::class,'index']);
 
 Route::delete('/usuarios/{id}',[UsuariosController::class,'delete']);
