@@ -62,7 +62,11 @@ class UsuariosController extends Controller
 
         return response()->json([
             'message' => 'Login exitoso, Choom.',
-            'user' => $usuario,
+            'user' => [
+                'id' => $usuario->id,
+                'name' => $usuario->name,
+                'email' => $usuario->email,
+            ],
             'token' => $token,
         ], 200); // Código HTTP 200: OK
     }
