@@ -41,35 +41,33 @@ class UsuariosController extends Controller
 
     public function login(Request $request)
     {
-        // Validar las credenciales ingresadas
         $validatedData = $request->validate([
-            'email' => 'required|email', // El email es obligatorio y debe tener formato válido
-            'password' => 'required|string|min:8', // La contraseña es obligatoria
+            'email' => 'required|email',
+            'password' => 'required|string|min:8',
         ]);
 
-        // Buscar el usuario por email
         $usuario = Usuarios::where('email', $validatedData['email'])->first();
 
-        // Verificar si el usuario existe y si la contraseña es válida
         if (!$usuario || !Hash::check($validatedData['password'], $usuario->password)) {
-            return response()->json([
-                'message' => 'Credenciales inválidas, Choom.',
-            ], 401); // Código HTTP 401: Unauthorized
+            return redirect()->back()->withErrors(['login' => 'Credenciales inválidas, Choom.']);
         }
 
-        // Generar un token para el usuario (usando Sanctum o Passport)
         $token = $usuario->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'Login exitoso, Choom.',
-            'user' => [
-                'id' => $usuario->id,
-                'name' => $usuario->name,
-                'email' => $usuario->email,
-            ],
-            'token' => $token,
-        ], 200); // Código HTTP 200: OK
+        // Guardar datos en la sesión si es necesario
+        session([
+            'user_id' => $usuario->id,
+            'user_name' => $usuario->name,
+            'user_email' => $usuario->email,
+            'auth_token' => $token,
+        ]);
+
+        // Redirigir a la página deseada
+        return redirect('/hola')->with('message', 'Login exitoso, Choom.');
     }
+
+
+
 
     public function index()
     {

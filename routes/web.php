@@ -6,52 +6,46 @@ use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
+// Ruta principal
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
+// Ruta para probar una vista adicional
 Route::get('/hola', function () {
-    return view('hola');
+    return view('hola'); // Una vista llamada "hola.blade.php"
+})->name('hola');
+
+// Rutas de autenticación y usuarios
+Route::prefix('usuarios')->group(function () {
+    Route::post('/register', [UsuariosController::class, 'register'])->name('usuarios.register');
+    Route::post('/login', [UsuariosController::class, 'login'])->name('usuarios.login'); // Cambio a usuarios.login para consistencia
+    Route::get('/', [UsuariosController::class, 'index'])->name('usuarios.index');
+    Route::put('/{id}', [UsuariosController::class, 'update'])->name('usuarios.update');
+    Route::delete('/{id}', [UsuariosController::class, 'delete'])->name('usuarios.delete');
 });
 
-Route::post('/register',[UsuariosController::class,'register']);
+// Rutas para clientes
+Route::prefix('clientes')->group(function () {
+    Route::get('/', [ClienteController::class, 'index'])->name('clientes.index');
+    Route::post('/', [ClienteController::class, 'store'])->name('clientes.store');
+});
 
-Route::post('/login',[UsuariosController::class,'login']);
+// Rutas para mascotas
+Route::prefix('mascotas')->group(function () {
+    Route::get('/', [MascotaController::class, 'index'])->name('mascotas.index');
+    Route::post('/', [MascotaController::class, 'store'])->name('mascotas.store');
+    Route::put('/{id}', [MascotaController::class, 'update'])->name('mascotas.update');
+    Route::delete('/{id}', [MascotaController::class, 'delete'])->name('mascotas.delete');
+});
 
-Route::get('/usuarios',[UsuariosController::class,'index']);
+// Rutas para citas
+Route::prefix('citas')->group(function () {
+    Route::get('/', [CitaController::class, 'index'])->name('citas.index');
+    Route::post('/', [CitaController::class, 'store'])->name('citas.store');
+    Route::put('/{id}', [CitaController::class, 'update'])->name('citas.update');
+    Route::delete('/{id}', [CitaController::class, 'delete'])->name('citas.delete');
+});
 
-Route::delete('/usuarios/{id}',[UsuariosController::class,'delete']);
-
-Route::put('/usuarios/{id}',[UsuariosController::class,'update']);
-
-Route::get('clientes',[ClienteController::class,'index']);
-
-Route::post('clientes',[ClienteController::class,'store']);
-
-Route::get('mascotas',[MascotaController::class,'index']);
-
-Route::post('mascotas',[MascotaController::class,'store']);
-
-Route::put('mascotas/{id}',[MascotaController::class,'update']);
-
-Route::delete('mascotas/{id}',[MascotaController::class,'delete']);
-
-Route::get('/citas',[CitaController::class,'index']);
-
-Route::post('/citas',[CitaController::class,'store']);
-
-Route::put('/citas/{id}',[CitaController::class,'update']);
-
-Route::delete('/citas/{id}',[CitaController::class,'delete']);
-
+// Ruta para la vista del login
+Route::view('/login', 'login')->name('login.view'); // Nombre consistente con el resto
