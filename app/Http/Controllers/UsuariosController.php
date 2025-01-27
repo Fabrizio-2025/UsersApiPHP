@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UsuariosController extends Controller
 {
+    // Registro de usuario
     public function register(Request $request)
     {
-        // Validación de los datos de entrada
         $validatedData = $request->validate([
-            'name' => 'required|string|min:5|max:255', // El name requiere mínimo 5 caracteres
+            'name' => 'required|string|min:5|max:255', // Nombre mínimo de 5 caracteres
             'email' => 'required|email', // Validar formato de email
             'password' => 'required|string|min:8', // Contraseña mínima de 8 caracteres
         ]);
 
-        // Verificar si el email ya está registrado
         $existingEmail = Usuarios::where('email', $validatedData['email'])->first();
 
         if ($existingEmail) {
@@ -26,11 +26,10 @@ class UsuariosController extends Controller
             ], 422); // Código HTTP 422: Unprocessable Entity
         }
 
-        // Crear el nuevo usuario
         $user = Usuarios::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
-            'password' => bcrypt($validatedData['password']), // Encriptar la contraseña
+            'password' => bcrypt($validatedData['password']), // Encriptar contraseña
         ]);
 
         return response()->json([
@@ -39,6 +38,7 @@ class UsuariosController extends Controller
         ], 201); // Código HTTP 201: Created
     }
 
+    // Login de usuario
     public function login(Request $request)
     {
         $validatedData = $request->validate([
@@ -48,27 +48,22 @@ class UsuariosController extends Controller
 
         $usuario = Usuarios::where('email', $validatedData['email'])->first();
 
-        if (!$usuario || !Hash::check($validatedData['password'], $usuario->password)) {
-            return redirect()->back()->withErrors(['login' => 'Credenciales inválidas, Choom.']);
+        if (!$usuario) {
+            return redirect()->back()->withErrors(['error' => 'Usuario no encontrado, Choom.']);
+        }
+
+        if (!Hash::check($validatedData['password'], $usuario->password)) {
+            return redirect()->back()->withErrors(['error' => 'Contraseña incorrecta, Choom.']);
         }
 
         $token = $usuario->createToken('auth_token')->plainTextToken;
 
-        // Guardar datos en la sesión si es necesario
-        session([
-            'user_id' => $usuario->id,
-            'user_name' => $usuario->name,
-            'user_email' => $usuario->email,
-            'auth_token' => $token,
-        ]);
+        $clientes = Cliente::with('mascotas')->get();
 
-        // Redirigir a la página deseada
-        return redirect('/hola')->with('message', 'Login exitoso, Choom.');
+        return view('clientes', compact('clientes', 'usuario'))->with('message', 'Bienvenido, ' . $usuario->name . ', Choom.');
     }
 
-
-
-
+    // Obtener lista de usuarios
     public function index()
     {
         $usuarios = Usuarios::all();
@@ -78,6 +73,7 @@ class UsuariosController extends Controller
         ], 200);
     }
 
+    // Eliminar usuario
     public function delete($id)
     {
         $usuario = Usuarios::find($id);
@@ -95,6 +91,7 @@ class UsuariosController extends Controller
         ], 200);
     }
 
+    // Actualizar usuario
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
