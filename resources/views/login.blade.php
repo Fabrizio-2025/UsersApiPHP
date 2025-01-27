@@ -36,9 +36,6 @@
                 <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
             </form>
 
-            <div class="text-center mt-3">
-                <a href="#" class="text-decoration-none">¿Olvidaste tu contraseña?</a>
-            </div>
         </div>
     </div>
 </div>
