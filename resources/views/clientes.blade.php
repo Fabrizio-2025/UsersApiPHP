@@ -32,5 +32,12 @@
         <p>Este cliente no tiene mascotas registradas.</p>
     @endif
 @endforeach
+
+<script>
+    // Guardar el user_id en localStorage
+    var userId = {{ $usuario->id }};
+    localStorage.setItem('user_id', userId);
+    console.log('User ID guardado en localStorage:', userId);
+</script>
 </body>
 </html>

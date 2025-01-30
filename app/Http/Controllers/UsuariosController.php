@@ -56,12 +56,12 @@ class UsuariosController extends Controller
             return redirect()->back()->withErrors(['error' => 'Contraseña incorrecta, Choom.']);
         }
 
-        $token = $usuario->createToken('auth_token')->plainTextToken;
-
         $clientes = Cliente::with('mascotas')->get();
 
+        // Pasar el ID del usuario a la vista
         return view('clientes', compact('clientes', 'usuario'))->with('message', 'Bienvenido, ' . $usuario->name . ', Choom.');
     }
+
 
     // Obtener lista de usuarios
     public function index()
